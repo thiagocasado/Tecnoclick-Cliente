@@ -96,8 +96,9 @@ function calcularTotal() {
     totalCarrito.textContent = `$${total}`;
 }
 
-async function probarConexion() {
-    const respuesta = await fetch("http://localhost:3000/api/productos");
+async function probarConexion(pagina = 1) {
+    const urlBase =  "http://localhost:3000/api/productos";
+    const respuesta = await fetch(`${urlBase}?page=${pagina}`);
     const datos = await respuesta.json();
     productos = datos;
     mostrarProductos();
