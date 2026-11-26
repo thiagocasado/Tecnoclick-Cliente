@@ -7,5 +7,6 @@ formulario.addEventListener("submit",(evento)=>{
         alert("Ingresa tu nombre para continuar")
         return;
     }
+    sessionStorage.setItem("nombreCliente",nombre);
    window.location.href = "productos.html";
 });

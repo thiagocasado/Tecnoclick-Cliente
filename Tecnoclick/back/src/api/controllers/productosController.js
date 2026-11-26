@@ -6,7 +6,8 @@ export async function listarProductos(req,res) {
         const offset = (pagina - 1) * 6;
         console.log(offset);
         
-        const productos = await Producto.obtenerActivos(offset);
+        const categoria = req.query.categoria;
+        const productos = await Producto.obtenerActivos(offset,categoria);
         res.json(productos);
     } 
     

@@ -1,3 +1,9 @@
+const nombreCliente = sessionStorage.getItem("nombreCliente");
+const saludoCliente = document.querySelector("#saludo-cliente")
+if (nombreCliente) {
+    saludoCliente.textContent = `Hola, ${nombreCliente}`
+}
+
 const contenedorProductos = document.querySelector("#contenedor-productos");
 const contenedorCarrito = document.querySelector("#contenedor-carrito")
 let  productos = [ ];
@@ -14,6 +20,7 @@ function actualizarContador() {
     contador.textContent = totalProductos;
 }
 function mostrarCarrito() {
+    sessionStorage.setItem("carrito", JSON.stringify(carrito));
     contenedorCarrito.innerHTML="";
     carrito.forEach(function(item){
         contenedorCarrito.innerHTML +=`
@@ -44,8 +51,9 @@ function mostrarProductos() {
         contenedorProductos.innerHTML += `
             <div class="tipo-producto">
             <h2> ${producto.nombre}</h2>
+            <img src="http://localhost:3000${producto.imagen}" alt ="Foto del producto" width="160">
             <p> Categoria: ${producto.categoria}</p>
-            <p> Precio: ${producto.precio} </p>
+            <p> Precio: ${Number(producto.precio)} </p>
             <button class="botonAgregar" data-id="${producto.id}"> Agregar producto al carrito </button>
             </div>
             `
@@ -96,14 +104,29 @@ function calcularTotal() {
     totalCarrito.textContent = `$${total}`;
 }
 
-async function probarConexion(pagina = 1) {
+async function probarConexion(pagina = 1, categoria) {
     const urlBase =  "http://localhost:3000/api/productos";
-    const respuesta = await fetch(`${urlBase}?page=${pagina}`);
-    const datos = await respuesta.json();
-    if(datos.length === 0){
-        return;
+    let url = `${urlBase}?page=${pagina}`;
+    if (categoria) {
+        url += `&categoria=${encodeURIComponent(categoria)}`;
     }
+
+    const respuesta = await fetch(url);
+    const datos = await respuesta.json();
+
+    if(datos.length === 0){
+    return;
+}
     paginaActual = pagina;
+    categoriaActual = categoria;
+    document.querySelectorAll("#contenedor-categorias button").forEach(function (boton){
+        if (boton.textContent === categoriaActual) {
+            boton.style.backgroundColor = "#166534";
+        }else{
+            boton.style.backgroundColor = "";
+        }
+
+    })
     if (paginaActual === 1) {
         botonAnterior.disabled = true; 
     }else{
@@ -117,15 +140,16 @@ async function probarConexion(pagina = 1) {
 probarConexion();
 
 let paginaActual = 1;
+let categoriaActual = "";
 const botonSiguiente = document.querySelector("#boton-siguiente");
 botonSiguiente.addEventListener("click", function (){
-    probarConexion(paginaActual +1);
+    probarConexion(paginaActual +1, categoriaActual);
 
 });
 
 const botonAnterior = document.querySelector("#boton-anterior");
 botonAnterior.addEventListener("click", function(){
-    probarConexion(paginaActual - 1);
+    probarConexion(paginaActual - 1, categoriaActual);
 });
 
 
@@ -144,6 +168,18 @@ async function cargarCategorias() {
     const botones = contenedorCategorias.querySelectorAll("button");
     botones.forEach(function(boton,indice){
         boton.textContent = categorias[indice].categoria;
+        boton.addEventListener("click", function(){
+           const categoriaElegida= categorias[indice].categoria;
+            
+           if (categoriaActual === categoriaElegida) {
+                probarConexion(1);
+           }else{
+            probarConexion(1, categoriaElegida);
+           }
+
+        
+        }
+    )
 
     });
    

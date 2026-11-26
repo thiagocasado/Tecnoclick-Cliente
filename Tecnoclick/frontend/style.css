@@ -1,6 +1,6 @@
 body{
     font-family: Arial, sans-serif;
-    background-color: rgb(26, 7, 7);
+    background-color: #f5f5f5;
     color: black;
 
 }
@@ -38,4 +38,31 @@ button:hover{
 }
 #boton-anterior:disabled{
     background-color: gray;
-};
+}
+#contenedor-categorias{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    
+}
+#contenedor-productos{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px
+    ;
+}
+.tipo-producto{
+    width: 180px;
+}
+.catalogo{
+    max-width:760px;
+}
+.tipo-producto h2 {
+    line-height: 1.2;
+    min-height: 2.4em;
+}
+.tipo-producto img{
+    height: 140px;
+    object-fit: contain;
+}

@@ -6,18 +6,25 @@ async function obtenerTodos(){
     );
     return productos;
 }
-async function obtenerActivos(offset = 0){
-    const [productos] = await db.query(
-        "select * from productos where activo  = 1 order by id limit 6 offset ?",
-        [offset]
-    );
+async function obtenerActivos(offset = 0, categoria){
+    let sql = "select *from productos where activo = 1";
+    const valores = [];
+
+    if (categoria){
+        sql += " and categoria = ?";
+        valores.push(categoria);
+    }
+    sql += " order by id limit 6 offset ?";
+    valores.push(offset);
+    const [productos] = await db.query(sql,valores);
     return productos;
 }
-async function obtenerCategoriasActivas() {
+
+async function  obtenerCategoriasActivas() {
     const [categorias] = await db.query(
         "select distinct categoria from productos where activo = 1"
     );
-    return categorias;
+    return categorias;    
 }
 
 /*

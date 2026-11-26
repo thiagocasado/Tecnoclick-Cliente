@@ -11,6 +11,7 @@ const PORT = environments.port;
 
 app.use(cors());
 app.use(express.json()); //middleware
+app.use("/images", express.static("images"))
 app.use("/api/productos",productosRoutes);
 app.get("/api/prueba", function(req,res){
     res.json({
