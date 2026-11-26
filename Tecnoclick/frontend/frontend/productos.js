@@ -100,9 +100,53 @@ async function probarConexion(pagina = 1) {
     const urlBase =  "http://localhost:3000/api/productos";
     const respuesta = await fetch(`${urlBase}?page=${pagina}`);
     const datos = await respuesta.json();
+    if(datos.length === 0){
+        return;
+    }
+    paginaActual = pagina;
+    if (paginaActual === 1) {
+        botonAnterior.disabled = true; 
+    }else{
+        botonAnterior.disabled = false;
+    }
     productos = datos;
     mostrarProductos();
     activarBotonesAgregar();
     
 }
 probarConexion();
+
+let paginaActual = 1;
+const botonSiguiente = document.querySelector("#boton-siguiente");
+botonSiguiente.addEventListener("click", function (){
+    probarConexion(paginaActual +1);
+
+});
+
+const botonAnterior = document.querySelector("#boton-anterior");
+botonAnterior.addEventListener("click", function(){
+    probarConexion(paginaActual - 1);
+});
+
+
+async function cargarCategorias() {
+    const respuesta = await fetch("http://localhost:3000/api/productos/categorias");
+    const categorias = await respuesta.json();
+    console.log(categorias);
+    const contenedorCategorias = document.querySelector("#contenedor-categorias");
+
+    let hmtlBotones= "";
+    categorias.forEach(function(){
+        hmtlBotones += `<button></button>`;
+    })
+    contenedorCategorias.innerHTML = hmtlBotones;
+
+    const botones = contenedorCategorias.querySelectorAll("button");
+    botones.forEach(function(boton,indice){
+        boton.textContent = categorias[indice].categoria;
+
+    });
+   
+}
+cargarCategorias()
+
